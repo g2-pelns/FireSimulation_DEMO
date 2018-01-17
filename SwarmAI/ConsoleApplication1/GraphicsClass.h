@@ -7,6 +7,7 @@
 #include "PositionClass.h"
 #include "ModelClass.h"
 #include "ColorShaderClass.h"
+#include "FireShaderClass.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -33,6 +34,7 @@ private:
 	PositionClass* m_Pos;
 	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
+	FireShaderClass* m_FireShader;
 };
 
 #endif

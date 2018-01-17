@@ -22,12 +22,16 @@ public:
 	~ModelClass();
 
 	void ShutDown();
-	bool Init(ID3D11Device*, char*);
+	bool Init(ID3D11Device*, char*, WCHAR*, WCHAR*, WCHAR*);
 	void Render(ID3D11DeviceContext*, ID3D11Device*);
 
 	int GetIndexCount();
 	int GetVertexCount();
 	int GetInstanceCount();
+
+	ID3D11ShaderResourceView* GetTexture1();
+	ID3D11ShaderResourceView* GetTexture2();
+	ID3D11ShaderResourceView* GetTexture3();
 
 private:
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc, instanceBufferDesc;

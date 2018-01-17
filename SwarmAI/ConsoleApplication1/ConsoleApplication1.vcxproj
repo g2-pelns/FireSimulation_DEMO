@@ -145,6 +145,7 @@
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="ColorShaderClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
+    <ClCompile Include="FireShaderClass.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="ColorShaderClass.h" />
     <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="FireShaderClass.h" />
     <ClInclude Include="GraphicsClass.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="ModelClass.h" />
@@ -182,6 +184,14 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FirePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="FireVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
