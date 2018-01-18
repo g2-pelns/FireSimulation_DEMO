@@ -90,6 +90,20 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		return false;
 	}
 
+	m_FireModel = new FireModelClass;
+	if (!m_FireModel)
+	{
+		return false;
+	}
+
+	result = m_FireModel->Init(m_Direct3D->GetDevice(), "../ConsoleApplication1/Cube.txt", L"../Engine/data/fire01.dds",
+		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds", hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
 	if (!m_ColorShader)
@@ -146,6 +160,13 @@ void GraphicsClass::ShutDown()
 		m_Model->ShutDown();
 		delete m_Model;
 		m_Model = 0;
+	}
+
+	if (m_FireModel)
+	{
+		m_FireModel->ShutDown();
+		delete m_FireModel;
+		m_FireModel = 0;
 	}
 
 	// Release the camera object.
@@ -331,9 +352,11 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
+	m_FireModel->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
+
 	// Render the square model using the fire shader.
-	result = m_FireShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Model->GetTexture1(), m_Model->GetTexture2(), m_Model->GetTexture3(), frameTime, scrollSpeeds,
+	result = m_FireShader->Render(m_Direct3D->GetDeviceContext(), m_FireModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_FireModel->GetTexture1(), m_FireModel->GetTexture2(), m_FireModel->GetTexture3(), frameTime, scrollSpeeds,
 		scales, distortion1, distortion2, distortion3, distortionScale, distortionBias);
 	if (!result)
 	{

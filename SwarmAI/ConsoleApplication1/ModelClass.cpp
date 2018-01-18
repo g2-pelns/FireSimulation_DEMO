@@ -65,21 +65,6 @@ int ModelClass::GetInstanceCount()
 	return m_instanceCount;
 }
 
-ID3D11ShaderResourceView * ModelClass::GetTexture1()
-{
-	return nullptr;
-}
-
-ID3D11ShaderResourceView * ModelClass::GetTexture2()
-{
-	return nullptr;
-}
-
-ID3D11ShaderResourceView * ModelClass::GetTexture3()
-{
-	return nullptr;
-}
-
 void ModelClass::ShutDownBuffers()
 {
 	// Release the index buffer.

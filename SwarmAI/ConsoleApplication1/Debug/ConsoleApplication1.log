@@ -1,19 +1,23 @@
-﻿Build started 17/01/2018 17:22:26.
-     1>Project "D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\ConsoleApplication1\ConsoleApplication1.vcxproj" on node 2 (Build target(s)).
+﻿Build started 18/01/2018 16:15:59.
+     1>Project "D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\ConsoleApplication1\ConsoleApplication1.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt FireShaderClass.cpp GraphicsClass.cpp Main.cpp SystemClass.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt FireModelClass.cpp GraphicsClass.cpp Main.cpp SystemClass.cpp
          SystemClass.cpp
-         Main.cpp
          GraphicsClass.cpp
-     1>d:\bigboigit\firesimulation_demo\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(28): warning C4316: 'D3dClass': object allocated on the heap may not be aligned 16
-     1>d:\bigboigit\firesimulation_demo\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(67): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-     1>d:\bigboigit\firesimulation_demo\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(207): warning C4101: 'result': unreferenced local variable
-         FireShaderClass.cpp
+     1>d:\bigboiben(not ben lol)\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(28): warning C4316: 'D3dClass': object allocated on the heap may not be aligned 16
+     1>d:\bigboiben(not ben lol)\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(67): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+     1>d:\bigboiben(not ben lol)\firesimulation_demo\swarmai\consoleapplication1\graphicsclass.cpp(228): warning C4101: 'result': unreferenced local variable
+         FireModelClass.cpp
+     1>d:\bigboiben(not ben lol)\firesimulation_demo\swarmai\consoleapplication1\firemodelclass.cpp(286): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         Main.cpp
          Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.lib" /MACHINE:X86 Debug\CameraClass.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.lib" /MACHINE:X86 Debug\CameraClass.obj
          Debug\ColorShaderClass.obj
          Debug\D3DClass.obj
+         Debug\FireModelClass.obj
          Debug\FireShaderClass.obj
          Debug\GraphicsClass.obj
          Debug\InputClass.obj
@@ -21,9 +25,9 @@
          Debug\ModelClass.obj
          Debug\PositionClass.obj
          Debug\SystemClass.obj
-         ConsoleApplication1.vcxproj -> D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.exe
-     1>Done Building Project "D:\BigBoiGit\FireSimulation_DEMO\FireSimulation_DEMO\SwarmAI\ConsoleApplication1\ConsoleApplication1.vcxproj" (Build target(s)).
+         ConsoleApplication1.vcxproj -> D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\Debug\ConsoleApplication1.exe
+     1>Done Building Project "D:\BigBoiBen(Not Ben Lol)\FireSimulation_DEMO\SwarmAI\ConsoleApplication1\ConsoleApplication1.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.88
+Time Elapsed 00:00:04.14

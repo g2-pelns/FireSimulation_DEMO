@@ -435,6 +435,7 @@ bool FireShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, Di
 
 	// Lock the distortion constant buffer so it can be written to.
 	result = deviceContext->Map(m_distortionBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
 	if (FAILED(result))
 	{
 		return false;

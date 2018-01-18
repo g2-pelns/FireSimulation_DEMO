@@ -29,10 +29,6 @@ public:
 	int GetVertexCount();
 	int GetInstanceCount();
 
-	ID3D11ShaderResourceView* GetTexture1();
-	ID3D11ShaderResourceView* GetTexture2();
-	ID3D11ShaderResourceView* GetTexture3();
-
 private:
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc, instanceBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData, instanceData;
