@@ -42,12 +42,6 @@
     <ClCompile Include="PositionClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FireShaderClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FireModelClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DClass.h">
@@ -74,12 +68,6 @@
     <ClInclude Include="PositionClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FireShaderClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireModelClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ColorVS.hlsl">
@@ -88,27 +76,10 @@
     <None Include="ColorPS.hlsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="FirePS.hlsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="FireVS.hlsl">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt">
       <Filter>Resource Files</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="alpha01.dds">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="fire01.dds">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="noise01.dds">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

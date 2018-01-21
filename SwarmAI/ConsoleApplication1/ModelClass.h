@@ -22,7 +22,7 @@ public:
 	~ModelClass();
 
 	void ShutDown();
-	bool Init(ID3D11Device*, char*, WCHAR*, WCHAR*, WCHAR*);
+	bool Init(ID3D11Device*, char*);
 	void Render(ID3D11DeviceContext*, ID3D11Device*);
 
 	int GetIndexCount();

@@ -5,12 +5,8 @@
 #include "InputClass.h"
 #include "CameraClass.h"
 #include "PositionClass.h"
-
 #include "ModelClass.h"
-#include "FireModelClass.h"
-
 #include "ColorShaderClass.h"
-#include "FireShaderClass.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -28,8 +24,6 @@ public:
 	void HandleCamMovement(InputClass*, float);
 	void ShutDown();
 	bool Frame(InputClass*, float);
-	
-	
 
 private:
 	bool Render();
@@ -37,12 +31,8 @@ private:
 	CameraClass* m_Camera;
 	InputClass* m_Input;
 	PositionClass* m_Pos;
-
 	ModelClass* m_Model;
-	FireModelClass* m_FireModel;
-
 	ColorShaderClass* m_ColorShader;
-	FireShaderClass* m_FireShader;
 };
 
 #endif

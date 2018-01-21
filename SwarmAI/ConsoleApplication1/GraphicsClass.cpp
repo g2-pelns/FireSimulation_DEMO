@@ -9,7 +9,6 @@ GraphicsClass::GraphicsClass()
 	m_Pos = 0;
 	m_Model = 0;
 	m_ColorShader = 0;
-	m_FireShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -82,22 +81,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	}
 
 	// Initialize the model object.
-	result = m_Model->Init(m_Direct3D->GetDevice(), "../ConsoleApplication1/Cube.txt", L"../Engine/data/fire01.dds",
-		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_FireModel = new FireModelClass;
-	if (!m_FireModel)
-	{
-		return false;
-	}
-
-	result = m_FireModel->Init(m_Direct3D->GetDevice(), "../ConsoleApplication1/Cube.txt", L"../Engine/data/fire01.dds",
-		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds", hwnd);
+	result = m_Model->Init(m_Direct3D->GetDevice(), "../ConsoleApplication1/Cube.txt");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -118,34 +102,11 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
 		return false;
 	}
-
-	// Create the fire shader object.
-	m_FireShader = new FireShaderClass;
-	if (!m_FireShader)
-	{
-		return false;
-	}
-
-	// Initialize the fire shader object.
-	result = m_FireShader->Init(m_Direct3D->GetDevice(), hwnd);
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the fire shader object.", L"Error", MB_OK);
-		return false;
-	}
-
 	return true;
 }
 
 void GraphicsClass::ShutDown()
 {
-	if (m_FireShader)
-	{
-		m_FireShader->Shutdown();
-		delete m_FireShader;
-		m_FireShader = 0;
-	}
-	
 	// Release the color shader object.
 	if (m_ColorShader)
 	{
@@ -160,13 +121,6 @@ void GraphicsClass::ShutDown()
 		m_Model->ShutDown();
 		delete m_Model;
 		m_Model = 0;
-	}
-
-	if (m_FireModel)
-	{
-		m_FireModel->ShutDown();
-		delete m_FireModel;
-		m_FireModel = 0;
 	}
 
 	// Release the camera object.
@@ -301,33 +255,6 @@ bool GraphicsClass::Render()
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
 	
-	DirectX::XMFLOAT3 scrollSpeeds, scales;
-	DirectX::XMFLOAT2 distortion1, distortion2, distortion3;
-	float distortionScale, distortionBias;
-	static float frameTime = 0.0f;
-
-	// Increment the frame time counter.
-	frameTime += 0.01f;
-	if (frameTime > 1000.0f)
-	{
-		frameTime = 0.0f;
-	}
-
-	// Set the three scrolling speeds for the three different noise textures.
-	scrollSpeeds = DirectX::XMFLOAT3(1.3f, 2.1f, 2.3f);
-
-	// Set the three scales which will be used to create the three different noise octave textures.
-	scales = DirectX::XMFLOAT3(1.0f, 2.0f, 3.0f);
-
-	// Set the three different x and y distortion factors for the three different noise textures.
-	distortion1 = DirectX::XMFLOAT2(0.1f, 0.2f);
-	distortion2 = DirectX::XMFLOAT2(0.1f, 0.3f);
-	distortion3 = DirectX::XMFLOAT2(0.1f, 0.1f);
-
-	// The the scale and bias of the texture coordinate sampling perturbation.
-	distortionScale = 0.8f;
-	distortionBias = 0.5f;
-
 	// Clear the buffers to begin the scene.
 	m_Direct3D->BeginScene(0.5f, 0.1f, 0.3f, 1.0f);
 
@@ -339,9 +266,6 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
-	// Turn on alpha blending for the fire transparency.
-	//m_Direct3D->TurnOnAlphaBlending();
-
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
 
@@ -351,20 +275,6 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
-
-	m_FireModel->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
-
-	// Render the square model using the fire shader.
-	result = m_FireShader->Render(m_Direct3D->GetDeviceContext(), m_FireModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_FireModel->GetTexture1(), m_FireModel->GetTexture2(), m_FireModel->GetTexture3(), frameTime, scrollSpeeds,
-		scales, distortion1, distortion2, distortion3, distortionScale, distortionBias);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Turn off alpha blending.
-	//m_D3D->TurnOffAlphaBlending();
 
 	// Present the rendered scene to the screen.
 	m_Direct3D->EndScene();

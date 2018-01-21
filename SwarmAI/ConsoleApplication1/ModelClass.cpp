@@ -22,7 +22,7 @@ void ModelClass::ShutDown()
 	return;
 }
 
-bool ModelClass::Init(ID3D11Device* device, char* modelFileName, WCHAR* texture, WCHAR* noise, WCHAR* alpha)
+bool ModelClass::Init(ID3D11Device* device, char* modelFileName)
 {
 	bool result;
 
@@ -46,7 +46,7 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext, ID3D11Device* device
 {
 	//Put the vertex and index buffers on the graphics pipeline to prepare them for drawing
 	RenderBuffers(deviceContext);
-	//updateInstPositions(device);
+	updateInstPositions(device);
 	return;
 }
 
@@ -64,7 +64,6 @@ int ModelClass::GetInstanceCount()
 {
 	return m_instanceCount;
 }
-
 void ModelClass::ShutDownBuffers()
 {
 	// Release the index buffer.
