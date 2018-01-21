@@ -9,6 +9,9 @@ GraphicsClass::GraphicsClass()
 	m_Pos = 0;
 	m_Model = 0;
 	m_ColorShader = 0;
+
+	m_ParticleShader = 0;
+	m_ParticleSystem = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -50,7 +53,6 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		return false;
 	}
 
-
 	//Create pos object
 	m_Pos = new PositionClass;
 	if (!m_Pos)
@@ -59,7 +61,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	}
 
 	//Set the initial pos and rot
-	m_Pos->SetPos(0.0f, 0.0f, -15.0f);
+	m_Pos->SetPos(1.0f, 1.0f, 1.0f);
 	m_Pos->SetRot(0.0f, 0.0f, 0.0f);
 
 	// Create the camera object.
@@ -70,7 +72,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -15.0f);
+	m_Camera->SetPosition(1.0f, 1.0f, 1.0f);
 	m_Camera->SetRotation(0.0f, 0.0f, 0.0f);
 
 	// Create the model object.
@@ -85,6 +87,35 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the particle shader object.
+	m_ParticleShader = new ParticleShaderClass;
+	if (!m_ParticleShader)
+	{
+		return false;
+	}
+
+	// Initialize the particle shader object.
+	result = m_ParticleShader->Init(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the particle shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the particle system object.
+	m_ParticleSystem = new ParticleSystemClass;
+	if (!m_ParticleSystem)
+	{
+		return false;
+	}
+
+	// Initialize the particle system object.
+	result = m_ParticleSystem->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../ConsoleApplication1/stone01.tga");
+	if (!result)
+	{
 		return false;
 	}
 
@@ -149,6 +180,24 @@ void GraphicsClass::ShutDown()
 		delete m_Direct3D;
 		m_Direct3D = 0;
 	}
+
+	// Release the particle system object.
+	if (m_ParticleSystem)
+	{
+		m_ParticleSystem->Shutdown();
+		delete m_ParticleSystem;
+		m_ParticleSystem = 0;
+	}
+
+	// Release the particle shader object.
+	if (m_ParticleShader)
+	{
+		m_ParticleShader->Shutdown();
+		delete m_ParticleShader;
+		m_ParticleShader = 0;
+	}
+
+
 	return;
 }
 
@@ -167,7 +216,10 @@ bool GraphicsClass::Frame(InputClass* Input, float frameTime)
 		return false;
 	}
 
+	// Run the frame processing for the particle system.
 	HandleCamMovement(m_Input, frameTime);
+	m_ParticleSystem->Frame(frameTime, m_Direct3D->GetDeviceContext());
+
 	//Render the graphics scene
 	result = Render();
 	if (!result)
@@ -266,11 +318,28 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
+	// Turn on alpha blending.
+	//m_Direct3D->EnableAlphaBlending();
+
+	// Turn off alpha blending.
+	//m_Direct3D->DisableAlphaBlending();
+
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
 
 	// Render the model using the color shader.
 	result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_ParticleSystem->Render(m_Direct3D->GetDeviceContext());
+
+	// Render the model using the texture shader.
+	result = m_ParticleShader->Render(m_Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_ParticleSystem->GetTexture());
 	if (!result)
 	{
 		return false;

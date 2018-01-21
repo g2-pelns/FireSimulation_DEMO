@@ -8,6 +8,9 @@
 #include "ModelClass.h"
 #include "ColorShaderClass.h"
 
+#include "ParticleShaderClass.h"
+#include "ParticleSystemClass.h"
+
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
@@ -33,6 +36,9 @@ private:
 	PositionClass* m_Pos;
 	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
+
+	ParticleShaderClass* m_ParticleShader;
+	ParticleSystemClass* m_ParticleSystem;
 };
 
 #endif

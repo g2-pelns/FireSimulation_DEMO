@@ -43,7 +43,10 @@ bool D3dClass::Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bo
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
+	D3D11_BLEND_DESC blendStateDescription;
 	D3D11_VIEWPORT viewport;
+	//ID3D11BlendState* m_alphaEnableBlendingState;
+	//ID3D11BlendState* m_alphaDisableBlendingState;
 
 	//Store the vsync settings
 	m_vsync_enabled = vsync;
@@ -348,7 +351,37 @@ bool D3dClass::Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bo
 
 	//Create an ortgographic projection matrix for 2D rendering
 	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+
+	// Create an alpha enabled blend state description.
+	/*blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;*/
+
+	// Create the blend state using the description.
+	/*result = m_device->CreateBlendState(&blendStateDes
+	cription, &m_alphaEnableBlendingState);
+	if (FAILED(result))
+	{
+		return false;
+	}*/
+
+	// Modify the description to create an alpha disabled blend state description.
+	//blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+
+	//// Create the blend state using the description.
+	//result = m_device->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState);
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
+
 	return true;
+
 }
 
 void D3dClass::ShutDown()

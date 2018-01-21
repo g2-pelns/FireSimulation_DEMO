@@ -149,8 +149,12 @@
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModelClass.cpp" />
+    <ClCompile Include="ParticleShaderClass.cpp" />
+    <ClCompile Include="ParticleSystemClass.cpp" />
     <ClCompile Include="PositionClass.cpp" />
     <ClCompile Include="SystemClass.cpp" />
+    <ClCompile Include="TextureClass.cpp" />
+    <ClCompile Include="TimerClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
@@ -159,8 +163,12 @@
     <ClInclude Include="GraphicsClass.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="ModelClass.h" />
+    <ClInclude Include="ParticleShaderClass.h" />
+    <ClInclude Include="ParticleSystemClass.h" />
     <ClInclude Include="PositionClass.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="TextureClass.h" />
+    <ClInclude Include="TimerClass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ColorVS.hlsl">
@@ -182,6 +190,17 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ParticlePS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ParticleVS.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="stone01.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

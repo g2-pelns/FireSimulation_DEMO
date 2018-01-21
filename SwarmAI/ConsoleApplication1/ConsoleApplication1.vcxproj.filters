@@ -42,6 +42,18 @@
     <ClCompile Include="PositionClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleSystemClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleShaderClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DClass.h">
@@ -68,6 +80,18 @@
     <ClInclude Include="PositionClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystemClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleShaderClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ColorVS.hlsl">
@@ -76,10 +100,21 @@
     <None Include="ColorPS.hlsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ParticlePS.hlsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ParticleVS.hlsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt">
       <Filter>Resource Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="stone01.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
