@@ -93,7 +93,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	// Create the particle system object.
 	m_ParticleSystem = new ParticleSystemClass;
 	if (!m_ParticleSystem)
-	{
+	{ 
 		return false;
 	}
 
