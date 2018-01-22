@@ -3,6 +3,8 @@
 TextureClass::TextureClass()
 {
 	m_texture = 0;
+	m_targaData = 0;
+	m_textureView = 0;
 }
 
 TextureClass::TextureClass(const TextureClass& other)

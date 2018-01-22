@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <fstream>
+
 using namespace std;
 
 class ParticleShaderClass

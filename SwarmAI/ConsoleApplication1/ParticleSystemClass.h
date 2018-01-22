@@ -19,7 +19,7 @@ public:
 
 	bool Init(ID3D11Device*, ID3D11DeviceContext*, char*);
 	void Shutdown();
-	bool Frame(float, ID3D11DeviceContext*);
+	bool Frame(float, ID3D11Device*, ID3D11DeviceContext*);
 	void Render(ID3D11DeviceContext*);
 
 	ID3D11ShaderResourceView* GetTexture();
@@ -36,7 +36,10 @@ private:
 	float m_accumulatedTime;
 
 	int m_vertexCount, m_indexCount;
+
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc, instanceBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData, instanceData;
 
 	struct ParticleType
 	{
@@ -66,7 +69,7 @@ private:
 	void UpdateParticles(float);
 	void KillParticles();
 
-	bool UpdateBuffers(ID3D11DeviceContext*);
+	bool UpdateBuffers(ID3D11Device*, ID3D11DeviceContext*);
 	void RenderBuffers(ID3D11DeviceContext*);
 
 	TextureClass* m_Texture;

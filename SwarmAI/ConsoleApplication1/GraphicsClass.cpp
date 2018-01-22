@@ -90,6 +90,20 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		return false;
 	}
 
+	// Create the particle system object.
+	m_ParticleSystem = new ParticleSystemClass;
+	if (!m_ParticleSystem)
+	{
+		return false;
+	}
+
+	// Initialize the particle system object.
+	result = m_ParticleSystem->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),"../ConsoleApplication1/stone01.tga");
+	if (!result)
+	{
+		return false;
+	}
+
 	// Create the particle shader object.
 	m_ParticleShader = new ParticleShaderClass;
 	if (!m_ParticleShader)
@@ -105,19 +119,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		return false;
 	}
 
-	// Create the particle system object.
-	m_ParticleSystem = new ParticleSystemClass;
-	if (!m_ParticleSystem)
-	{
-		return false;
-	}
 
-	// Initialize the particle system object.
-	result = m_ParticleSystem->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../ConsoleApplication1/stone01.tga");
-	if (!result)
-	{
-		return false;
-	}
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
@@ -218,7 +220,8 @@ bool GraphicsClass::Frame(InputClass* Input, float frameTime)
 
 	// Run the frame processing for the particle system.
 	HandleCamMovement(m_Input, frameTime);
-	m_ParticleSystem->Frame(frameTime, m_Direct3D->GetDeviceContext());
+	//m_ParticleSystem->Render(m_Direct3D->GetDeviceContext());
+	m_ParticleSystem->Frame(frameTime,m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext());
 
 	//Render the graphics scene
 	result = Render();
