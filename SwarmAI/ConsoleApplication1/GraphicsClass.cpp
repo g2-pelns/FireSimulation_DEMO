@@ -7,11 +7,12 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	m_Input = 0;
 	m_Pos = 0;
+
 	m_Model = 0;
 	m_ColorShader = 0;
 
-	m_ParticleShader = 0;
 	m_ParticleSystem = 0;
+	m_ParticleShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -98,7 +99,7 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 	}
 
 	// Initialize the particle system object.
-	result = m_ParticleSystem->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),"../ConsoleApplication1/stone01.tga");
+	result = m_ParticleSystem->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),"../ConsoleApplication1/stone01.tga", "../ConsoleApplication1/Cube.txt");
 	if (!result)
 	{
 		return false;
@@ -118,8 +119,6 @@ bool GraphicsClass::Init(HINSTANCE hinstance,int screenWidth, int screenHeight, 
 		MessageBox(hwnd, L"Could not initialize the particle shader object.", L"Error", MB_OK);
 		return false;
 	}
-
-
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
@@ -328,21 +327,20 @@ bool GraphicsClass::Render()
 	//m_Direct3D->DisableAlphaBlending();
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
+	//m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
 
 	// Render the model using the color shader.
-	result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix);
+	/*result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	//Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_ParticleSystem->Render(m_Direct3D->GetDeviceContext());
 
 	// Render the model using the texture shader.
-	result = m_ParticleShader->Render(m_Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_ParticleSystem->GetTexture());
+	result = m_ParticleShader->Render(m_Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix, m_ParticleSystem->GetTexture());
 	if (!result)
 	{
 		return false;

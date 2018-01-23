@@ -34,6 +34,7 @@ private:
 	CameraClass* m_Camera;
 	InputClass* m_Input;
 	PositionClass* m_Pos;
+
 	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
 

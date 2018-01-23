@@ -2,14 +2,16 @@
 #define _PARTICLE_SYSTEM_CLASS_H_
 
 #include <d3d11.h>
-#include <ctime>
+#include <DirectXMath.h>
+
 #include <fstream>
 #include <memory>
 #include <vector>
-
-#include <DirectXMath.h>
+#include <ctime>
 
 #include "TextureClass.h"
+
+using namespace std;
 class ParticleSystemClass
 {
 public:
@@ -17,13 +19,16 @@ public:
 	ParticleSystemClass(const ParticleSystemClass&);
 	~ParticleSystemClass();
 
-	bool Init(ID3D11Device*, ID3D11DeviceContext*, char*);
+	bool Init(ID3D11Device*, ID3D11DeviceContext*, char*, char*);
 	void Shutdown();
 	bool Frame(float, ID3D11Device*, ID3D11DeviceContext*);
 	void Render(ID3D11DeviceContext*);
 
 	ID3D11ShaderResourceView* GetTexture();
+
 	int GetIndexCount();
+	int GetVertexCount();
+	int GetInstanceCount();
 
 private:
 
@@ -34,6 +39,7 @@ private:
 
 	int m_currentParticleCount;
 	float m_accumulatedTime;
+	int m_instanceCount = 4;
 
 	int m_vertexCount, m_indexCount;
 
@@ -54,7 +60,11 @@ private:
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT2 texture;
 		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT3 instancePosition;
 	};
+
+	bool LoadModel(char*);
+	void ReleaseModel();
 
 	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext*, char*);
 	void ReleaseTexture();
@@ -73,8 +83,12 @@ private:
 	void RenderBuffers(ID3D11DeviceContext*);
 
 	TextureClass* m_Texture;
-	ParticleType* m_particleList;
-	VertexType* m_vertices;
+
+	vector<unique_ptr<ParticleType>> m_particle;
+	VertexType* m_instances;
+	ID3D11Buffer* m_instanceBuffer;
+	//ParticleType* m_particleList;
+	//VertexType* m_vertices;
 };
 
 #endif

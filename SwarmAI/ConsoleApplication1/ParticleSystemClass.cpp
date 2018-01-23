@@ -3,10 +3,13 @@
 ParticleSystemClass::ParticleSystemClass()
 {
 	m_Texture = 0;
-	m_particleList = 0;
-	m_vertices = 0;
+	//m_particleList = 0;
+	//m_vertices = 0;
+
+
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
+	m_instanceBuffer = 0;
 }
 
 ParticleSystemClass::ParticleSystemClass(const ParticleSystemClass& other)
@@ -17,10 +20,31 @@ ParticleSystemClass::~ParticleSystemClass()
 {
 }
 
-bool ParticleSystemClass::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* textureFilename)
+void ParticleSystemClass::Shutdown()
+{
+	// Release the buffers.
+	ShutdownBuffers();
+
+	// Release the particle system.
+	ShutdownParticleSystem();
+
+	ReleaseModel();
+
+	// Release the texture used for the particles.
+	ReleaseTexture();
+
+	return;
+}
+
+bool ParticleSystemClass::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* textureFilename, char* modelFilename)
 {
 	bool result;
 
+	result = LoadModel(modelFilename);
+	if (!result)
+	{
+		return false;
+	}
 
 	// Load the texture that is used for the particles.
 	result = LoadTexture(device, deviceContext, textureFilename);
@@ -28,7 +52,7 @@ bool ParticleSystemClass::Init(ID3D11Device* device, ID3D11DeviceContext* device
 	{
 		return false;
 	}
-
+	
 	// Initialize the particle system.
 	result = InitParticleSystem();
 	if (!result)
@@ -44,20 +68,6 @@ bool ParticleSystemClass::Init(ID3D11Device* device, ID3D11DeviceContext* device
 	}
 
 	return true;
-}
-
-void ParticleSystemClass::Shutdown()
-{
-	// Release the buffers.
-	ShutdownBuffers();
-
-	// Release the particle system.
-	ShutdownParticleSystem();
-
-	// Release the texture used for the particles.
-	ReleaseTexture();
-
-	return;
 }
 
 bool ParticleSystemClass::Frame(float frameTime,ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -100,6 +110,81 @@ ID3D11ShaderResourceView* ParticleSystemClass::GetTexture()
 int ParticleSystemClass::GetIndexCount()
 {
 	return m_indexCount;
+}
+
+int ParticleSystemClass::GetVertexCount()
+{
+	return m_vertexCount;
+}
+
+int ParticleSystemClass::GetInstanceCount()
+{
+	return m_instanceCount;
+}
+
+bool ParticleSystemClass::LoadModel(char* fileName)
+{
+	ifstream fIn;
+	char input;
+
+	//Open the model file
+	fIn.open(fileName);
+
+	//if cound not open the file then exit
+	if (fIn.fail())
+	{
+		return false;
+	}
+
+	fIn.get(input);
+	//Read up to the value of vertex count
+	//fin.get(input);
+	while (input != ':')
+	{
+		fIn.get(input);
+	}
+
+	//Read in the vertex count
+	fIn >> m_vertexCount;
+	//Set the number of indices to be the same as the vertex count
+	m_indexCount = m_vertexCount;
+
+	m_particle.reserve(m_vertexCount);
+
+	fIn.get(input);
+	while (input != ':')
+	{
+		fIn.get(input);
+	}
+	fIn.get(input);
+	fIn.get(input);
+
+	//Create the model using the vertex count that was read in
+	/*m_model = new ModelType[m_vertexCount];
+	if (!m_model)
+	{
+	return false;
+	}*/
+
+	//Read up to the beginning of the data
+	/*fin.get(input);
+	while (input != ':')
+	{
+	fin.get(input);
+	}*/
+	//fin.get(input);
+	//fin.get(input);
+
+	//Read the vertex data
+	for (auto i = 0; i < m_vertexCount; i++)
+	{
+		m_particle.push_back(make_unique<ParticleType>());
+		fIn >> m_particle[i]->posX >> m_particle[i]->posY >> m_particle[i]->posZ;
+	}
+
+	//Close the model file
+	fIn.close();
+	return true;
 }
 
 bool ParticleSystemClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
@@ -156,19 +241,19 @@ bool ParticleSystemClass::InitParticleSystem()
 	m_particlesPerSecond = 5.0f;
 
 	// Set the maximum number of particles allowed in the particle system.
-	m_maxParticles = 5000;
+	m_maxParticles = m_particle.size();
 
 	// Create the particle list.
-	m_particleList = new ParticleType[m_maxParticles];
+	/*m_particle = new ParticleType[m_maxParticles];
 	if (!m_particleList)
 	{
 		return false;
-	}
+	}*/
 
 	// Initialize the particle list.
 	for (i = 0; i<m_maxParticles; i++)
 	{
-		m_particleList[i].active = false;
+		m_particle[i]->active = false;
 	}
 
 	// Initialize the current particle count to zero since none are emitted yet.
@@ -183,34 +268,27 @@ bool ParticleSystemClass::InitParticleSystem()
 void ParticleSystemClass::ShutdownParticleSystem()
 {
 	// Release the particle list.
-	if (m_particleList)
-	{
-		delete[] m_particleList;
-		m_particleList = 0;
-	}
-
+	m_particle.clear();
 	return;
 }
 
 bool ParticleSystemClass::InitBuffers(ID3D11Device* device)
 {
-	unsigned long* indices;
-	VertexType* vertices;
-	int i;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	int i = 0;
 	HRESULT result;
-
+	VertexType* vertices;
+	//InstanceType* instances;
+	unsigned long* indices;
 
 	// Set the maximum number of vertices in the vertex array.
-	m_vertexCount =  m_maxParticles * 6;
+	//m_vertexCount =  m_maxParticles * 6;
 
 	// Set the maximum number of indices in the index array.
 	m_indexCount = m_vertexCount;
 
 	// Create the vertex array for the particles that will be rendered.
-	m_vertices = new VertexType[m_vertexCount];
-	if (!m_vertices)
+	vertices = new VertexType[m_vertexCount];
+	if (!vertices)
 	{
 		return false;
 	}
@@ -223,11 +301,19 @@ bool ParticleSystemClass::InitBuffers(ID3D11Device* device)
 	}
 
 	//// Initialize vertex array to zeros at first.
-	memset(m_vertices, 0, (sizeof(VertexType) * m_vertexCount));
+	//memset(vertices, 0, (sizeof(VertexType) * m_vertexCount));
+	std::srand(static_cast <unsigned> (time(0)));
 
 	// Initialize the index array.
-	for (i = 0; i<m_indexCount; i++)
+	for (i = 0; i < m_vertexCount; i++)
 	{
+		float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+		vertices[i].position = { m_particle[i]->posX, m_particle[i]->posY, m_particle[i]->posZ };
+		vertices[i].color = { g, r, b, 1.0f };
+
 		indices[i] = i;
 	}
 
@@ -273,7 +359,7 @@ bool ParticleSystemClass::InitBuffers(ID3D11Device* device)
 	vertexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = m_vertices;
+	vertexData.pSysMem = vertices;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
@@ -304,9 +390,62 @@ bool ParticleSystemClass::InitBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	// Release the index array since it is no longer needed.
-	//delete[] vertices;
-	//vertices = 0;
+	m_instanceCount = 1000;
+
+	m_instances = new VertexType[m_instanceCount];
+
+	if (!m_instances)
+	{
+		return false;
+	}
+
+	int x = 0, y = 0, z = 5;
+	int iterator = 0;
+	int ziter = 0;
+	for (int i = 0; i < m_instanceCount; i++)
+	{
+		m_instances[i].position = DirectX::XMFLOAT3(x, y, z);
+
+		x += 2;
+		iterator++;
+		if (iterator == 10)
+		{
+			iterator = 0;
+			ziter++;
+			y -= 2;
+			x = 0;
+			if (ziter == 10)
+			{
+				z += 2;
+				y = 0;
+				ziter = 0;
+			}
+		}
+	}
+
+	//Set up the description of the instance buffer
+	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	instanceBufferDesc.ByteWidth = sizeof(VertexType)* m_instanceCount;
+	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = 0;
+	instanceBufferDesc.MiscFlags = 0;
+	instanceBufferDesc.StructureByteStride = 0;
+
+	//Give the subrespurce structure a pointer to the instace data
+	instanceData.pSysMem = m_instances;
+	instanceData.SysMemPitch = 0;
+	instanceData.SysMemSlicePitch = 0;
+
+	//Create the instance buffer
+	result = device->CreateBuffer(&instanceBufferDesc, &instanceData, &m_instanceBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Release the arrays now that the vertex and index buffers have been created and loaded.
+	delete[] vertices;
+	vertices = 0;
 	
 	delete[] indices;
 	indices = 0;
@@ -341,7 +480,7 @@ void ParticleSystemClass::EmitParticles(float frameTime)
 
 
 	// Increment the frame time.
-	m_accumulatedTime += 5.0f;//frameTime;
+	m_accumulatedTime += 20.0f;//frameTime;
 
 	// Set emit particle to false for now.
 	emitParticle = false;
@@ -375,7 +514,7 @@ void ParticleSystemClass::EmitParticles(float frameTime)
 		found = false;
 		while (!found)
 		{
-			if ((m_particleList[index].active == false) || (m_particleList[index].posZ < positionZ))
+			if ((m_particle[index]->active == false) || (m_particle[index]->posZ < positionZ))
 			{
 				found = true;
 			}
@@ -391,27 +530,27 @@ void ParticleSystemClass::EmitParticles(float frameTime)
 
 		while (i != index)
 		{
-			m_particleList[i].posX = m_particleList[j].posX;
-			m_particleList[i].posY = m_particleList[j].posY;
-			m_particleList[i].posZ = m_particleList[j].posZ;
-			m_particleList[i].red = m_particleList[j].red;
-			m_particleList[i].green = m_particleList[j].green;
-			m_particleList[i].blue = m_particleList[j].blue;
-			m_particleList[i].velocity = m_particleList[j].velocity;
-			m_particleList[i].active = m_particleList[j].active;
+			m_particle[i]->posX = m_particle[j]->posX;
+			m_particle[i]->posY = m_particle[j]->posY;
+			m_particle[i]->posZ = m_particle[j]->posZ;
+			m_particle[i]->red = m_particle[j]->red;
+			m_particle[i]->green = m_particle[j]->green;
+			m_particle[i]->blue = m_particle[j]->blue;
+			m_particle[i]->velocity = m_particle[j]->velocity;
+			m_particle[i]->active = m_particle[j]->active;
 			i--;
 			j--;
 		}
 
 		// Now insert it into the particle array in the correct depth order.
-		m_particleList[index].posX = positionX;
-		m_particleList[index].posY = positionY;
-		m_particleList[index].posZ = positionZ;
-		m_particleList[index].red = red;
-		m_particleList[index].green = green;
-		m_particleList[index].blue = blue;
-		m_particleList[index].velocity = velocity;
-		m_particleList[index].active = true;
+		m_particle[index]->posX = positionX;
+		m_particle[index]->posY = positionY;
+		m_particle[index]->posZ = positionZ;
+		m_particle[index]->red = red;
+		m_particle[index]->green = green;
+		m_particle[index]->blue = blue;
+		m_particle[index]->velocity = velocity;
+		m_particle[index]->active = true;
 
 		//m_vertices[index].position = DirectX::XMFLOAT3(positionX, positionY, positionZ);
 		//m_vertices[index].color = DirectX::XMFLOAT4(red, green, blue, 0);
@@ -428,7 +567,7 @@ void ParticleSystemClass::UpdateParticles(float frameTime)
 	// Each frame we update all the particles by making them move downwards using their position, velocity, and the frame time.
 	for (i = 0; i<m_currentParticleCount; i++)
 	{
-		m_particleList[i].posZ = m_particleList[i].posZ - (m_particleList[i].velocity * frameTime * 1.0f);
+		m_particle[i]->posZ = m_particle[i]->posZ - (m_particle[i]->velocity * frameTime * 1.0f);
 		//m_vertices[i].position.z = m_vertices[i].position.z - (m_particleList[i].velocity * frameTime * 1.0f);
 	}
 
@@ -475,7 +614,7 @@ bool ParticleSystemClass::UpdateBuffers(ID3D11Device* device, ID3D11DeviceContex
 
 
 	// Initialize vertex array to zeros at first.
-	memset(m_vertices, 0, (sizeof(VertexType) * m_vertexCount));
+	//memset(m_instances, 0, (sizeof(VertexType) * m_vertexCount));
 
 	// Now build the vertex array from the particle list array.  Each particle is a quad made out of two triangles.
 	index = 0;
@@ -483,35 +622,17 @@ bool ParticleSystemClass::UpdateBuffers(ID3D11Device* device, ID3D11DeviceContex
 	for(i=0; i<m_currentParticleCount; i++)
 	{
 		// Bottom left.
-		m_vertices[index].position = DirectX::XMFLOAT3(m_particleList[i].posX - m_particleSize, m_particleList[i].posY - m_particleSize, m_particleList[i].posZ);
-		m_vertices[index].texture = DirectX::XMFLOAT2(0.0f, 1.0f);
-		m_vertices[index].color = DirectX::XMFLOAT4(m_particleList[i].red, m_particleList[i].green, m_particleList[i].blue, 1.0f);
-		index++;
-
-		// Top left.
-		m_vertices[index].position = DirectX::XMFLOAT3(m_particleList[i].posX - m_particleSize, m_particleList[i].posY + m_particleSize, m_particleList[i].posZ);
-		m_vertices[index].texture = DirectX::XMFLOAT2(0.0f, 0.0f);
-		m_vertices[index].color = DirectX::XMFLOAT4(m_particleList[i].red, m_particleList[i].green, m_particleList[i].blue, 1.0f);
-		index++;
-
-		// Bottom right.
-		m_vertices[index].position = DirectX::XMFLOAT3(m_particleList[i].posX + m_particleSize, m_particleList[i].posY - m_particleSize, m_particleList[i].posZ);
-		m_vertices[index].texture = DirectX::XMFLOAT2(1.0f, 1.0f);
-		m_vertices[index].color = DirectX::XMFLOAT4(m_particleList[i].red, m_particleList[i].green, m_particleList[i].blue, 1.0f);
-		index++;
-
-		// Top right.
-		m_vertices[index].position = DirectX::XMFLOAT3(m_particleList[i].posX + m_particleSize, m_particleList[i].posY + m_particleSize, m_particleList[i].posZ);
-		m_vertices[index].texture = DirectX::XMFLOAT2(1.0f, 0.0f);
-		m_vertices[index].color = DirectX::XMFLOAT4(m_particleList[i].red, m_particleList[i].green, m_particleList[i].blue, 1.0f);
+		m_instances[i].position = DirectX::XMFLOAT3(m_particle[i]->posX - m_particleSize, m_particle[i]->posY - m_particleSize, m_particle[i]->posZ);
+		m_instances[i].texture = DirectX::XMFLOAT2(0.0f, 1.0f);
+		m_instances[i].color = DirectX::XMFLOAT4(m_particle[i]->red, m_particle[i]->green, m_particle[i]->blue, 1.0f);
 		index++;
 	}
 
-	//result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
-	//if (FAILED(result))
-	//{
-	//	return false;
-	//}
+	/*result = device->CreateBuffer(&instanceBufferDesc, &instanceData, &m_instanceBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}*/
 	
 	// Lock the vertex buffer.
 	result = deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -524,7 +645,7 @@ bool ParticleSystemClass::UpdateBuffers(ID3D11Device* device, ID3D11DeviceContex
 	verticesPtr = (VertexType*)mappedResource.pData;
 
 	// Copy the data into the vertex buffer.
-	memcpy(verticesPtr, (void*)m_vertices, (sizeof(VertexType) * m_vertexCount));
+	memcpy(verticesPtr, (void*)m_instances, (sizeof(VertexType) * m_vertexCount));
 
 	// Unlock the vertex buffer.
 	deviceContext->Unmap(m_vertexBuffer, 0);
@@ -536,22 +657,36 @@ bool ParticleSystemClass::UpdateBuffers(ID3D11Device* device, ID3D11DeviceContex
 
 void ParticleSystemClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
-	unsigned int stride;
-	unsigned int offset;
-
+	unsigned int strides[2];
+	unsigned int offsets[2];
+	ID3D11Buffer* bufferPointers[2];
 
 	// Set vertex buffer stride and offset.
-	stride = sizeof(VertexType);
-	offset = 0;
+	strides[0] = sizeof(VertexType);
+	strides[1] = sizeof(VertexType);
+
+	//Set the buffer offsets
+	offsets[0] = 0;
+	offsets[1] = 0;
+
+	//Set he array of ointers to the vertex and instance buffers
+	bufferPointers[0] = m_vertexBuffer;
+	bufferPointers[1] = m_instanceBuffer;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
 	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	// Set the type of primitive that should be rendered from this vertex buffer.
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	return;
+}
+
+void ParticleSystemClass::ReleaseModel()
+{
+	m_particle.clear();
 	return;
 }
