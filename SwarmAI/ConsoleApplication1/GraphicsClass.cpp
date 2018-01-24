@@ -309,8 +309,10 @@ bool GraphicsClass::Render()
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
 	
-	// Clear the buffers to begin the scene.
-	m_Direct3D->BeginScene(0.5f, 0.1f, 0.3f, 1.0f);
+	if (renderOther) {
+		// Clear the buffers to begin the scene.
+		m_Direct3D->BeginScene(0.5f, 0.1f, 0.3f, 1.0f);
+	}
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
@@ -326,28 +328,37 @@ bool GraphicsClass::Render()
 	// Turn off alpha blending.
 	//m_Direct3D->DisableAlphaBlending();
 
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	//m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
+	if (renderOther) {
+		//Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		m_ParticleSystem->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
 
-	// Render the model using the color shader.
-	/*result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
-	{
-		return false;
-	}*/
-
-	//Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_ParticleSystem->Render(m_Direct3D->GetDeviceContext());
-
-	// Render the model using the texture shader.
-	result = m_ParticleShader->Render(m_Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix, m_ParticleSystem->GetTexture());
-	if (!result)
-	{
-		return false;
+		// Render the model using the texture shader.
+		result = m_ParticleShader->Render(m_Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), m_ParticleSystem->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix, m_ParticleSystem->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
 	}
+	else {
+
+		// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		m_Model->Render(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDevice());
+
+		// Render the model using the color shader.
+		result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix);
+		if (!result)
+		{
+			return false;
+		}
+	}
+	renderOther = !renderOther;
+	
+
 
 	// Present the rendered scene to the screen.
-	m_Direct3D->EndScene();
+	if (renderOther) {
+		m_Direct3D->EndScene();
+	}
 
 	return true;
 }

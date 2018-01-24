@@ -19,10 +19,11 @@ public:
 	ParticleSystemClass(const ParticleSystemClass&);
 	~ParticleSystemClass();
 
-	bool Init(ID3D11Device*, ID3D11DeviceContext*, char*, char*);
 	void Shutdown();
+	bool Init(ID3D11Device*, ID3D11DeviceContext*, char*, char*);
+	void Render(ID3D11DeviceContext*, ID3D11Device*);
+
 	bool Frame(float, ID3D11Device*, ID3D11DeviceContext*);
-	void Render(ID3D11DeviceContext*);
 
 	ID3D11ShaderResourceView* GetTexture();
 
@@ -31,29 +32,19 @@ public:
 	int GetInstanceCount();
 
 private:
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc, instanceBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData, instanceData;
+
+	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+	int m_vertexCount, m_indexCount;
+	int m_instanceCount = 4;
 
 	float m_particleDeviationX, m_particleDeviationY, m_particleDeviationZ;
 	float m_particleVelocity, m_particleVelocityVariation;
 	float m_particleSize, m_particlesPerSecond;
-	int m_maxParticles;
-
 	int m_currentParticleCount;
 	float m_accumulatedTime;
-	int m_instanceCount = 4;
-
-	int m_vertexCount, m_indexCount;
-
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc, instanceBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData, instanceData;
-
-	struct ParticleType
-	{
-		float posX, posY, posZ;
-		float red, green, blue;
-		float velocity;
-		bool active;
-	};
+	int m_maxParticles;
 
 	struct VertexType
 	{
@@ -61,6 +52,14 @@ private:
 		DirectX::XMFLOAT2 texture;
 		DirectX::XMFLOAT4 color;
 		DirectX::XMFLOAT3 instancePosition;
+	};
+
+	struct ParticleType
+	{
+		float X, Y, Z;
+		float red, green, blue;
+		float velocity;
+		bool active;
 	};
 
 	bool LoadModel(char*);
@@ -83,9 +82,8 @@ private:
 	void RenderBuffers(ID3D11DeviceContext*);
 
 	TextureClass* m_Texture;
-
-	vector<unique_ptr<ParticleType>> m_particle;
-	VertexType* m_instances;
+	vector<unique_ptr<ParticleType>> particleModels;
+	VertexType* instances;
 	ID3D11Buffer* m_instanceBuffer;
 	//ParticleType* m_particleList;
 	//VertexType* m_vertices;

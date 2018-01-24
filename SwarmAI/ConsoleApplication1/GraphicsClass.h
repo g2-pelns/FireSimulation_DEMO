@@ -40,6 +40,8 @@ private:
 
 	ParticleShaderClass* m_ParticleShader;
 	ParticleSystemClass* m_ParticleSystem;
+
+	bool renderOther = false;
 };
 
 #endif

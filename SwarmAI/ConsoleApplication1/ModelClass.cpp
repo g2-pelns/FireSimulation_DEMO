@@ -46,7 +46,7 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext, ID3D11Device* device
 {
 	//Put the vertex and index buffers on the graphics pipeline to prepare them for drawing
 	RenderBuffers(deviceContext);
-	//updateInstPositions(device);
+	updateInstPositions(device);
 	return;
 }
 
